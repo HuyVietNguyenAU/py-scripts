@@ -11,37 +11,6 @@ from datetime import datetime
 import psutil
 import argparse
 
-# Only run if executed directly
-if __name__ != "__main__":
-    sys.exit()
-
-# Get folders from arguments
-parser = argparse.ArgumentParser(description="Convert Ms Office files in a folder to PDF")
-parser.add_argument("--input-folder", required=True, help="Name of input folder")
-parser.add_argument("--output-folder", required=True, help="Name of output folder")
-parser.add_argument("--processed-folder", required=True, help="Name of folder to archive processed files")
-parser.add_argument("--log-folder", required=True, help="Name of folder to store conversion log file")
-
-args = parser.parse_args()
-input_folder = args.input_folder
-output_base_folder = args.output_folder
-processed_base_folder = args.processed_folder
-log_folder = args.log_folder
-
-# Ensure base output and processed directories exist
-os.makedirs(output_base_folder, exist_ok=True)
-os.makedirs(processed_base_folder, exist_ok=True)
-
-# Ensure log folder exists
-os.makedirs(log_folder, exist_ok=True)
-
-# Configure logging
-logging.basicConfig(
-    filename=os.path.join(log_folder, datetime.now().strftime("process_%Y-%m-%d_%H-%M-%S.log")),  # Log file name
-    level=logging.INFO,       # Logging level (INFO, DEBUG, WARNING, ERROR, CRITICAL)
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
-
 def print_info(info_message):
     print(f"⚠️ {info_message}")    
     logging.info(info_message)
@@ -155,7 +124,38 @@ def convert_office_files_recursively(input_folder):
                 print_info(f"Skipping (unsupported file): {rel_path}")
                 copy_to_output(file_path, output_pdf_path)
                 move_to_processed(file_path, rel_path)
-                
+
+# Only run if executed directly
+if __name__ != "__main__":
+    sys.exit()
+
+# Get folders from arguments
+parser = argparse.ArgumentParser(description="Convert Ms Office files in a folder to PDF")
+parser.add_argument("--input-folder", required=True, help="Name of input folder")
+parser.add_argument("--output-folder", required=True, help="Name of output folder")
+parser.add_argument("--processed-folder", required=True, help="Name of folder to archive processed files")
+parser.add_argument("--log-folder", required=True, help="Name of folder to store conversion log file")
+
+args = parser.parse_args()
+input_folder = args.input_folder
+output_base_folder = args.output_folder
+processed_base_folder = args.processed_folder
+log_folder = args.log_folder
+
+# Ensure base output and processed directories exist
+os.makedirs(output_base_folder, exist_ok=True)
+os.makedirs(processed_base_folder, exist_ok=True)
+
+# Ensure log folder exists
+os.makedirs(log_folder, exist_ok=True)
+
+# Configure logging
+logging.basicConfig(
+    filename=os.path.join(log_folder, datetime.now().strftime("process_%Y-%m-%d_%H-%M-%S.log")),  # Log file name
+    level=logging.INFO,       # Logging level (INFO, DEBUG, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
 # 🔹 Run the conversion recursively
 
 print_info("Start processing")
