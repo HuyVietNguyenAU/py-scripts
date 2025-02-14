@@ -1,6 +1,6 @@
 ##
 ## purposes: convert Excel, Word and PowerPoint documents in a specified folder into PDF, including files in child folder
-## usage: py convert.py INPUT_FOLDER OUTPUT_FOLDER PROCESSED_FOLDER LOG_FOLDER
+## usage: py convert_office_to_pdf.py INPUT_FOLDER OUTPUT_FOLDER PROCESSED_FOLDER LOG_FOLDER
 ##
 import os
 import sys
@@ -9,13 +9,24 @@ import win32com.client
 import logging
 from datetime import datetime
 import psutil
+import argparse
+
+# Only run if executed directly
+if __name__ != "__main__":
+    sys.exit()
 
 # Get folders from arguments
-if len(sys.argv) != 5:
-    print("❌ Missing arguments. Usage: py convert.py INPUT_FOLDER OUTPUT_FOLDER PROCESSED_FOLDER LOG_FOLDER")
-    sys.exit(1)
+parser = argparse.ArgumentParser(description="Convert Ms Office files in a folder to PDF")
+parser.add_argument("--input-folder", required=True, help="Name of input folder")
+parser.add_argument("--output-folder", required=True, help="Name of output folder")
+parser.add_argument("--processed-folder", required=True, help="Name of folder to archive processed files")
+parser.add_argument("--log-folder", required=True, help="Name of folder to store conversion log file")
 
-input_folder, output_base_folder, processed_base_folder, log_folder = sys.argv[1:5]
+args = parser.parse_args()
+input_folder = args.input_folder
+output_base_folder = args.output_folder
+processed_base_folder = args.processed_folder
+log_folder = args.log_folder
 
 # Ensure base output and processed directories exist
 os.makedirs(output_base_folder, exist_ok=True)
